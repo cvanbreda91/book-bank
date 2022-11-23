@@ -6,17 +6,16 @@ const typeDefs = gql`
     username: String
     email: String
     bookCount: Int
-    password: String
-    savedBooks: [Book]
+    savedBooks: [bookSchema]
   }
 
   type Book {
-    authors: String
-    description: String
     bookId: String
+    authors: [String]
+    description: String
+    title: String
     image: String
     link: String
-    title: String
   }
 
   type Auth {
@@ -28,15 +27,15 @@ const typeDefs = gql`
     me: User
     user: [User]
     user(username: String!): User
-    books(username: String): [User.savedBooks.Book]
-    book(User.savedBooks.bookId: ID!): book
+    books(username: String): [savedBooks]
+    book(savedBooks: ID!): book
   }
 
   type Mutation {
     login(email: String!, password: String!): Auth
     createUser(username: String!, email: String!, password: String!): Auth
-    saveBook(User.savedBooks.bookId: String!): Book
-    deleteBook(User.savedBooks.bookId: String!): Book
+    saveBook(book: SavedBookInput): User
+    deleteBook(bookId: String!): User
   }
 `;
 

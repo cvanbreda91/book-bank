@@ -1,5 +1,5 @@
 const { AuthenticationError } = require('apollo-server-express');
-const { User } = require('../models');
+const { User, Book } = require('../models');
 const { signToken } = require('../utils/auth');
 
 const resolvers = {
@@ -14,14 +14,6 @@ const resolvers = {
             }
 
             throw new AuthenticationError('Not logged in');
-        },
-        user: async (parent, { username, _id }) => {
-            return User.findOne({ username, _id })
-                .select('-__v -password')
-        },
-        book: async (parent, { savedBooks: bookId }) => {
-            return User.findOne({ savedBooks: bookId });
-
         },
     },
 
@@ -56,13 +48,11 @@ const resolvers = {
         },
 
         //save a book to a user's `savedBooks` field by adding it to the set (to prevent duplicates)
-        saveBook: async (parent, args, context) => {
+        saveBook: async (parent, { bookSchema }, context) => {
             if (context.user) {
-                const updatedUser = await User.savedBooks.create({ ...args, username: context.user.username });
-
-                await User.findByIdAndUpdate(
+                const updatedUser = await User.findByIdAndUpdate(
                     { _id: context.user._id },
-                    { $push: { savedBooks: User.savedBooks.bookId } },
+                    { $addToSet: { savedBooks: bookSchema} },
                     { new: true }
                 );
 
@@ -72,13 +62,11 @@ const resolvers = {
             throw new AuthenticationError('You need to be logged in!');
         },
         //remove a book from `savedBooks`
-        deleteBook: async (parent, args, context) => {
+        deleteBook: async (parent, { bookId }, context) => {
             if (context.user) {
-                const updatedUser = await User.savedBooks.delete({ ...args, username: context.user.username });
-
-                await User.findByIdAndUpdate(
+                const updatedUser = await User.findByIdAndUpdate(
                     { _id: context.user._id },
-                    { $push: { savedBooks: User.savedBooks.bookId } },
+                    { $pull: { bookId: bookId } },
                     { new: true }
                 );
 

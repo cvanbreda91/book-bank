@@ -9,9 +9,9 @@ import {
 import { setContext } from '@apollo/client/link/context';
 import SearchBooks from './pages/SearchBooks';
 import SavedBooks from './pages/SavedBooks';
-import Navbar from './pages/Navbar';
-import Login from './pages/LoginForm';
-import Signup from './pages/SignupForm';
+import Navbar from './components/Navbar';
+import Login from './components/LoginForm';
+import Signup from './components/SignupForm';
 
 const httpLink = createHttpLink({
   uri: '/graphql',

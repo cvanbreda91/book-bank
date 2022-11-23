@@ -8,28 +8,14 @@ export const GET_ME = gql`
       email
       bookCount
       savedBooks {
+        bookId
         authors
         description
-        bookId
+        title
         image
         link
-        title
       }
     }
   }
 `;
 
-export const GET_ME_BASIC = gql`
-  {
-    me {
-      _id
-      username
-      email
-      bookCount
-      savedBooks {
-        bookId
-        title
-      }
-    }
-  }
-`;
